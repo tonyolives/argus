@@ -26,14 +26,14 @@ There is no free, unified platform that combines real-time flight tracking with 
 
 ## Tech Stack
 
-| Layer | Technology | Version |
-|---|---|---|
-| **Frontend** | React, TypeScript, Globe.gl, Vite | 18.x, 5.x |
-| **Backend** | Spring Boot, Java | 3.2.x, 17 |
-| **Database** | PostgreSQL, PostGIS | 16, 3.4 |
-| **Testing** | JUnit 5, Mockito, Jest, React Testing Library | — |
-| **CI/CD** | GitHub Actions | — |
-| **Infrastructure** | Docker Compose | — |
+| Layer              | Technology                                    | Version   |
+| ------------------ | --------------------------------------------- | --------- |
+| **Frontend**       | React, TypeScript, Globe.gl, Vite             | 18.x, 5.x |
+| **Backend**        | Spring Boot, Java                             | 3.2.x, 17 |
+| **Database**       | PostgreSQL, PostGIS                           | 16, 3.4   |
+| **Testing**        | JUnit 5, Mockito, Jest, React Testing Library | —         |
+| **CI/CD**          | GitHub Actions                                | —         |
+| **Infrastructure** | Docker Compose                                | —         |
 
 ## Architecture
 
@@ -56,7 +56,7 @@ For full details, see the [System Architecture Document](docs/Argus_Architecture
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/tony-olivares/argus.git
+git clone https://github.com/tonyolives/argus.git
 cd argus
 
 # 2. Configure environment
@@ -128,29 +128,29 @@ argus/
 
 Argus follows strict **Test-Driven Development (TDD)** — tests are written before implementation for all service-layer code and interactive frontend components. See [ADR-005](docs/Argus_ADRs_v1_0.md) for the full rationale and [CONTRIBUTING.md](CONTRIBUTING.md) for the TDD workflow.
 
-| Layer | Tool | Target Coverage |
-|---|---|---|
-| Backend unit tests | JUnit 5 + Mockito | >80% |
+| Layer                     | Tool                              | Target Coverage   |
+| ------------------------- | --------------------------------- | ----------------- |
+| Backend unit tests        | JUnit 5 + Mockito                 | >80%              |
 | Backend integration tests | Spring Boot Test + TestContainers | All API endpoints |
-| Frontend tests | Jest + React Testing Library | >70% |
+| Frontend tests            | Jest + React Testing Library      | >70%              |
 
 ## Documentation
 
-| Document | Description |
-|---|---|
-| [Product Requirements (PRD)](docs/Argus_PRD_v1_0.md) | Scope, user stories, success metrics |
-| [Architecture Decision Records](docs/Argus_ADRs_v1_0.md) | 8 technical decisions with rationale |
-| [System Architecture](docs/Argus_Architecture_v1_0.md) | Component design, data flows, API contracts |
-| [Sprint Backlog](docs/Argus_Sprint_Backlog_v1_0.md) | 36 tickets across 7 sprints |
-| [API Reference](http://localhost:8080/swagger-ui.html) | Auto-generated OpenAPI docs (run backend first) |
+| Document                                                 | Description                                     |
+| -------------------------------------------------------- | ----------------------------------------------- |
+| [Product Requirements (PRD)](docs/Argus_PRD_v1_0.md)     | Scope, user stories, success metrics            |
+| [Architecture Decision Records](docs/Argus_ADRs_v1_0.md) | 8 technical decisions with rationale            |
+| [System Architecture](docs/Argus_Architecture_v1_0.md)   | Component design, data flows, API contracts     |
+| [Sprint Backlog](docs/Argus_Sprint_Backlog_v1_0.md)      | 36 tickets across 7 sprints                     |
+| [API Reference](http://localhost:8080/swagger-ui.html)   | Auto-generated OpenAPI docs (run backend first) |
 
 ## Data Sources
 
-| Source | Purpose | Cost |
-|---|---|---|
-| [OpenSky Network](https://opensky-network.org/) | Live aircraft positions | Free |
-| [GDELT Event API](https://www.gdeltproject.org/) | Auto-detected global events | Free |
-| [GDELT DOC API](https://blog.gdeltproject.org/gdelt-doc-2-0-api-expanded/) | Related news articles | Free |
+| Source                                                                     | Purpose                     | Cost |
+| -------------------------------------------------------------------------- | --------------------------- | ---- |
+| [OpenSky Network](https://opensky-network.org/)                            | Live aircraft positions     | Free |
+| [GDELT Event API](https://www.gdeltproject.org/)                           | Auto-detected global events | Free |
+| [GDELT DOC API](https://blog.gdeltproject.org/gdelt-doc-2-0-api-expanded/) | Related news articles       | Free |
 
 ## License
 
@@ -162,4 +162,4 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 ---
 
-*Named after Argus Panoptes, the hundred-eyed giant of Greek mythology who served as an ever-vigilant watchman.*
+_Named after Argus Panoptes, the hundred-eyed giant of Greek mythology who served as an ever-vigilant watchman._

@@ -75,7 +75,7 @@ The primary candidates are Spring Boot (Java) and Express.js (Node.js). Both are
 | **Spring Boot 3 (Java 17+)** | + Strong typing catches bugs at compile time | - More verbose than Node.js for simple tasks |
 | | + Mature testing ecosystem (JUnit 5, Mockito, TestContainers) | - Slower initial development for prototyping |
 | | + Built-in scheduling (@Scheduled) for polling tasks | - Heavier resource footprint than Node.js |
-| | + Swagger/OpenAPI auto-generation from annotations | - Requires JDK setup and build tool (Maven/Gradle) |
+| | + Swagger/OpenAPI auto-generation from annotations | - Requires JDK setup and build tool (Maven) |
 | | + Strong resume signal for enterprise and defense companies | |
 | | + Excellent dependency injection and separation of concerns | |
 | **Express.js (Node.js)** | + Faster prototyping with less boilerplate | - Dynamic typing increases runtime bug risk |
@@ -94,11 +94,11 @@ The additional verbosity is an acceptable tradeoff given the benefits in testabi
 
 ### Consequences
 
-- Backend will be built with Spring Boot 3.2+, Java 17, and Gradle as the build tool.
+- Backend will be built with Spring Boot 3.2+, Java 17, and Maven as the build tool.
 - All external API integrations will use RestTemplate or WebClient with Mockito-based mocking in tests.
 - Scheduled tasks will use Spring's `@Scheduled` annotation with configurable intervals.
 - API documentation will be auto-generated via springdoc-openapi (Swagger UI).
-- Developers must have JDK 17+ and Gradle installed locally.
+- Developers must have JDK 17+ and Maven 3.9+ installed locally.
 
 ### References
 

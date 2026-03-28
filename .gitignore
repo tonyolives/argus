@@ -1,0 +1,65 @@
+# =============================================
+# Java / Maven
+# =============================================
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+hs_err_pid*
+replay_pid*
+
+# Maven wrapper (keep mvnw and .mvn/wrapper, ignore downloaded jar)
+.mvn/wrapper/maven-wrapper.jar
+
+# =============================================
+# Node / Frontend
+# =============================================
+frontend/node_modules/
+frontend/dist/
+frontend/coverage/
+frontend/.eslintcache
+*.tsbuildinfo
+
+# =============================================
+# IDE
+# =============================================
+.idea/
+*.iml
+*.iws
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+.factorypath
+
+# =============================================
+# Environment & Secrets
+# =============================================
+.env
+*.env.local
+*.env.*.local
+
+# =============================================
+# Docker
+# =============================================
+data/postgres/
+
+# =============================================
+# OS
+# =============================================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# =============================================
+# Test & Coverage Reports
+# =============================================
+jacoco.exec
+*.exec
+htmlReport/

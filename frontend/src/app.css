@@ -1,0 +1,117 @@
+:root {
+  color: #f3f5f7;
+  background:
+    radial-gradient(circle at top, rgba(45, 86, 122, 0.45), transparent 30%),
+    linear-gradient(180deg, #071019 0%, #03070d 100%);
+  font-family:
+    'Segoe UI',
+    'Helvetica Neue',
+    Helvetica,
+    Arial,
+    sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) 1fr;
+  min-height: 100vh;
+}
+
+.hero-panel {
+  padding: 3rem 2rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(6, 12, 20, 0.72);
+  backdrop-filter: blur(12px);
+}
+
+.eyebrow {
+  margin: 0 0 1rem;
+  color: #91c4ff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+}
+
+.hero-panel h1 {
+  margin: 0;
+  font-size: clamp(2.25rem, 5vw, 3.3rem);
+  line-height: 1.05;
+}
+
+.lede {
+  margin: 1.25rem 0 0;
+  max-width: 28rem;
+  color: rgba(243, 245, 247, 0.78);
+}
+
+.globe-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  overflow: hidden;
+}
+
+.globe-stage::before {
+  content: '';
+  position: absolute;
+  inset: 8%;
+  border: 1px solid rgba(138, 196, 255, 0.12);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at center, rgba(27, 84, 140, 0.26), transparent 65%);
+  filter: blur(1px);
+}
+
+.globe-placeholder {
+  position: relative;
+  z-index: 1;
+  width: min(70vw, 760px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 36% 34%, rgba(117, 213, 255, 0.95), transparent 20%),
+    radial-gradient(circle at 50% 50%, rgba(28, 66, 110, 0.95), #04111d 68%);
+  box-shadow:
+    0 0 90px rgba(68, 132, 214, 0.24),
+    inset -90px -80px 120px rgba(0, 0, 0, 0.38);
+}
+
+.globe-placeholder::after {
+  content: 'Globe.gl canvas lands in the next commit.';
+  position: absolute;
+  left: 50%;
+  bottom: -2.8rem;
+  transform: translateX(-50%);
+  width: max-content;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.95rem;
+}
+
+@media (max-width: 900px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-panel {
+    border-right: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+}

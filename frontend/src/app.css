@@ -67,6 +67,7 @@ body {
   place-items: center;
   padding: 2rem;
   overflow: hidden;
+  min-height: 520px;
 }
 
 .globe-stage::before {
@@ -80,29 +81,20 @@ body {
   filter: blur(1px);
 }
 
-.globe-placeholder {
+.globe-frame {
   position: relative;
   z-index: 1;
-  width: min(70vw, 760px);
+  width: min(76vw, 820px);
   aspect-ratio: 1;
   border-radius: 50%;
-  background:
-    radial-gradient(circle at 36% 34%, rgba(117, 213, 255, 0.95), transparent 20%),
-    radial-gradient(circle at 50% 50%, rgba(28, 66, 110, 0.95), #04111d 68%);
-  box-shadow:
-    0 0 90px rgba(68, 132, 214, 0.24),
-    inset -90px -80px 120px rgba(0, 0, 0, 0.38);
+  overflow: hidden;
+  background: transparent;
+  box-shadow: none;
 }
 
-.globe-placeholder::after {
-  content: 'Globe.gl canvas lands in the next commit.';
-  position: absolute;
-  left: 50%;
-  bottom: -2.8rem;
-  transform: translateX(-50%);
-  width: max-content;
-  color: rgba(255, 255, 255, 0.65);
-  font-size: 0.95rem;
+.globe-frame canvas {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 @media (max-width: 900px) {

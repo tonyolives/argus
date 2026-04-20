@@ -1,7 +1,8 @@
 # =============================================================================
 # Argus — Application Configuration
-# Default section: no database required (DataSource/JPA/Flyway excluded).
-# Activate the "dev" profile (SPRING_PROFILES_ACTIVE=dev) when Docker DB is up.
+# Default section keeps DB-dependent autoconfiguration off for non-database tasks.
+# Activate the "dev" profile (SPRING_PROFILES_ACTIVE=dev) to connect to the
+# local PostgreSQL + PostGIS container and apply Flyway migrations on startup.
 # =============================================================================
 server:
   port: 8080
@@ -10,8 +11,8 @@ spring:
   application:
     name: argus
 
-  # Exclude DB-dependent autoconfiguration until the database is provisioned
-  # (ARG-003 / ARG-004). Remove these exclusions once Flyway migrations land.
+  # Leave DB-dependent autoconfiguration off by default so documentation work,
+  # frontend work, and non-DB backend tests can still boot cleanly.
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
@@ -39,14 +40,14 @@ logging:
 
 ---
 # =============================================================================
-# dev profile — requires docker-compose up -d db
+# dev profile — requires the local PostgreSQL + PostGIS container from ARG-003
 # =============================================================================
 spring:
   config:
     activate:
       on-profile: dev
 
-  # Re-enable autoconfiguration excluded in the default section
+  # Re-enable the database stack for local development.
   autoconfigure:
     exclude: []
 
@@ -76,14 +77,14 @@ logging:
 
 ---
 # =============================================================================
-# prod profile
+# prod profile — enables the same Flyway-managed schema flow against deployment DBs
 # =============================================================================
 spring:
   config:
     activate:
       on-profile: prod
 
-  # Re-enable autoconfiguration excluded in the default section
+  # Re-enable the database stack for production.
   autoconfigure:
     exclude: []
 

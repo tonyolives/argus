@@ -135,7 +135,7 @@ Argus follows a standard three-tier architecture with clear separation of concer
 | Layer | Technology | Responsibility |
 |---|---|---|
 | **Frontend** | React 18 + Globe.gl | 3D globe rendering, user interactions, data visualization, state management. |
-| **Backend** | Spring Boot 3 (Java 17+) | REST API, external data aggregation, polling orchestration, business logic, caching. |
+| **Backend** | Spring Boot 3 (Java 17) | REST API, external data aggregation, polling orchestration, business logic, caching. |
 | **Database** | PostgreSQL 16 + PostGIS | Persistent storage for cached flights, incidents, and news. Geospatial indexing and queries. |
 | **External APIs** | OpenSky, GDELT | Live flight data (OpenSky Network API), global event detection and news (GDELT Event + DOC APIs). |
 

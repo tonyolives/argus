@@ -49,7 +49,7 @@ For full details, see the [System Architecture Document](docs/Argus_Architecture
 ### Prerequisites
 
 - **Docker Desktop** (for PostgreSQL + PostGIS)
-- **JDK 17+** ([Eclipse Temurin](https://adoptium.net/) recommended)
+- **JDK 17** ([Eclipse Temurin](https://adoptium.net/) recommended)
 - **Node.js 18+** and npm 9+
 
 ### Setup
@@ -130,6 +130,9 @@ cd frontend && npm test
 # Frontend with coverage
 cd frontend && npm test -- --coverage
 ```
+
+GitHub Actions runs these backend and frontend test commands on every push and
+pull request, and uploads the generated coverage reports as workflow artifacts.
 
 ## Project Structure
 

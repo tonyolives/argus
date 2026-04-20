@@ -72,7 +72,7 @@ The primary candidates are Spring Boot (Java) and Express.js (Node.js). Both are
 
 | Option | Pros | Cons |
 |---|---|---|
-| **Spring Boot 3 (Java 17+)** | + Strong typing catches bugs at compile time | - More verbose than Node.js for simple tasks |
+| **Spring Boot 3 (Java 17)** | + Strong typing catches bugs at compile time | - More verbose than Node.js for simple tasks |
 | | + Mature testing ecosystem (JUnit 5, Mockito, TestContainers) | - Slower initial development for prototyping |
 | | + Built-in scheduling (@Scheduled) for polling tasks | - Heavier resource footprint than Node.js |
 | | + Swagger/OpenAPI auto-generation from annotations | - Requires JDK setup and build tool (Maven) |
@@ -86,7 +86,7 @@ The primary candidates are Spring Boot (Java) and Express.js (Node.js). Both are
 
 ### Decision
 
-We will use **Spring Boot 3 with Java 17+** as the backend framework.
+We will use **Spring Boot 3 with Java 17** as the backend framework.
 
 The deciding factors are: (1) the project owner is already actively building with Spring Boot, eliminating ramp-up time; (2) the testing ecosystem (JUnit 5 + Mockito + TestContainers) is best-in-class for TDD, which is a core project requirement; (3) Spring Boot's enterprise credibility is a strategic advantage for the target job market (defense, fintech, enterprise SaaS); and (4) built-in scheduling and structured dependency injection are well-suited to the polling-heavy architecture.
 
@@ -98,7 +98,7 @@ The additional verbosity is an acceptable tradeoff given the benefits in testabi
 - All external API integrations will use RestTemplate or WebClient with Mockito-based mocking in tests.
 - Scheduled tasks will use Spring's `@Scheduled` annotation with configurable intervals.
 - API documentation will be auto-generated via springdoc-openapi (Swagger UI).
-- Developers must have JDK 17+ and Maven 3.9+ installed locally.
+- Developers must have JDK 17 and Maven 3.9+ installed locally.
 
 ### References
 

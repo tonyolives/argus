@@ -14,4 +14,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial interactive globe UI with a dark Argus landing layout and Earth texture rendering
 - Frontend API client scaffold and Vite dev proxy for backend requests during local development
 - Local PostgreSQL 16 + PostGIS 3.4 Docker Compose setup with persistent data storage and verification steps
+- Initial Flyway schema migration for flights, incidents, and news_articles with PostGIS-enabled geometry columns and indexes
 - Shared repository contributor guidance in `AGENTS.md`

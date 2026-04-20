@@ -7,7 +7,7 @@ POSTGRES_USER="${POSTGRES_USER:-argus_user}"
 COMPOSE_CMD="${COMPOSE_CMD:-docker compose}"
 
 echo "Checking database tables..."
-$COMPOSE_CMD exec db psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c '\dt'
+$COMPOSE_CMD exec db psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c '\dt public.*'
 
 echo
 echo "Describing flights table..."

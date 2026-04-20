@@ -186,7 +186,7 @@ The entire stack runs locally using Docker Compose for the database and standard
 | Component | How to Run | Prerequisites |
 |---|---|---|
 | PostgreSQL + PostGIS | `docker-compose up -d db` | Docker Desktop installed |
-| Spring Boot backend | `./mvnw spring-boot:run` | JDK 17+, Maven 3.9+ |
+| Spring Boot backend | `./mvnw spring-boot:run` | JDK 17, Maven 3.9+ |
 | React frontend | `cd frontend && npm run dev` | Node 18+, npm 9+ |
 | Full test suite | `./mvnw test && cd frontend && npm test` | All of the above |
 

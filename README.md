@@ -49,7 +49,7 @@ For full details, see the [System Architecture Document](docs/Argus_Architecture
 ### Prerequisites
 
 - **Docker Desktop** (for PostgreSQL + PostGIS)
-- **JDK 17+** ([Eclipse Temurin](https://adoptium.net/) recommended)
+- **JDK 17** ([Eclipse Temurin](https://adoptium.net/) recommended)
 - **Node.js 18+** and npm 9+
 
 ### Setup

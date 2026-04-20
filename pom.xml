@@ -79,9 +79,8 @@
             </plugin>
 
             <!-- Code formatting — Google Java Format (AOSP = 4-space, matches .editorconfig)
-                 NOTE: requires Java ≤ 21. On Java 25, GJF's use of com.sun.tools.javac
-                 internal APIs triggers NoSuchMethodError. Run ./mvnw spotless:apply with
-                 JAVA_HOME pointing to a Java 21 JDK, or wait for GJF Java-25 support. -->
+                 NOTE: the project target is Java 17. If a newer local JDK causes formatter
+                 issues, rerun Spotless with JAVA_HOME pointing to a Java 17 JDK. -->
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>

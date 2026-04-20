@@ -24,6 +24,7 @@ docker-compose down
 ### Backend
 ```bash
 ./mvnw spring-boot:run
+SPRING_PROFILES_ACTIVE=dev ./mvnw spring-boot:run
 ./mvnw test
 ./mvnw clean package
 ./mvnw spotless:check
@@ -53,6 +54,12 @@ Database verification for ARG-003:
 2. `docker-compose up -d db`
 3. `docker-compose ps`
 4. `docker-compose exec db psql -U argus_user -d argus -c "SELECT PostGIS_Version();"`
+
+Schema verification for ARG-004:
+1. `cp .env.example .env`
+2. `docker-compose up -d db`
+3. `SPRING_PROFILES_ACTIVE=dev ./mvnw spring-boot:run`
+4. `./scripts/verify_arg004_schema.sh`
 
 Important local URLs:
 - Frontend: `http://localhost:5173`

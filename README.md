@@ -70,7 +70,7 @@ docker-compose up -d db
 docker-compose exec db psql -U argus_user -d argus -c "SELECT PostGIS_Version();"
 
 # 4. Start the backend
-./mvnw spring-boot:run
+SPRING_PROFILES_ACTIVE=dev ./mvnw spring-boot:run
 
 # 5. Start the frontend (in a new terminal)
 cd frontend
@@ -96,6 +96,27 @@ Expected result:
 - the `db` container is running and healthy
 - PostgreSQL is reachable on `localhost:5432`
 - `SELECT PostGIS_Version();` returns a PostGIS `3.4.x` version
+
+### Verifying Flyway Schema Initialization
+
+After the database is running, start the backend with the `dev` profile so Flyway
+applies the initial migration:
+
+```bash
+SPRING_PROFILES_ACTIVE=dev ./mvnw spring-boot:run
+```
+
+Then, in a separate terminal, verify the schema created by `V1__init.sql`:
+
+```bash
+./scripts/verify_arg004_schema.sh
+```
+
+Expected result:
+- `public.flights`, `public.incidents`, and `public.news_articles` exist
+- `flights.location` and `incidents.location` use `geometry(Point,4326)`
+- the required GiST and B-tree indexes are present
+- `news_articles.incident_id` references `incidents.id`
 
 ### Running Tests
 

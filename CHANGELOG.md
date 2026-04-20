@@ -15,4 +15,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Frontend API client scaffold and Vite dev proxy for backend requests during local development
 - Local PostgreSQL 16 + PostGIS 3.4 Docker Compose setup with persistent data storage and verification steps
 - Initial Flyway schema migration for flights, incidents, and news_articles with PostGIS-enabled geometry columns and indexes
+- GitHub Actions CI workflow that runs backend and frontend tests and uploads coverage artifacts
 - Shared repository contributor guidance in `AGENTS.md`

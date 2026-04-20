@@ -131,6 +131,9 @@ cd frontend && npm test
 cd frontend && npm test -- --coverage
 ```
 
+GitHub Actions runs these backend and frontend test commands on every push and
+pull request, and uploads the generated coverage reports as workflow artifacts.
+
 ## Project Structure
 
 ```

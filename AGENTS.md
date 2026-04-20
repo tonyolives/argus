@@ -16,6 +16,8 @@ Current status:
 ### Infrastructure
 ```bash
 docker-compose up -d db
+docker-compose ps
+docker-compose exec db psql -U argus_user -d argus -c "SELECT PostGIS_Version();"
 docker-compose down
 ```
 
@@ -45,6 +47,12 @@ Run the project in three terminals:
 1. `docker-compose up -d db`
 2. `./mvnw spring-boot:run`
 3. `cd frontend && npm install && npm run dev`
+
+Database verification for ARG-003:
+1. `cp .env.example .env`
+2. `docker-compose up -d db`
+3. `docker-compose ps`
+4. `docker-compose exec db psql -U argus_user -d argus -c "SELECT PostGIS_Version();"`
 
 Important local URLs:
 - Frontend: `http://localhost:5173`

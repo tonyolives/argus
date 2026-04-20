@@ -66,6 +66,9 @@ cp .env.example .env
 # 3. Start the database
 docker-compose up -d db
 
+# 3a. Verify PostGIS is available
+docker-compose exec db psql -U argus_user -d argus -c "SELECT PostGIS_Version();"
+
 # 4. Start the backend
 ./mvnw spring-boot:run
 
@@ -78,6 +81,21 @@ npm run dev
 Open [http://localhost:5173](http://localhost:5173) to see the globe.
 
 API documentation is available at [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html) when the backend is running.
+
+### Verifying PostgreSQL + PostGIS
+
+Use these commands to validate the local database setup after copying `.env.example` to `.env`:
+
+```bash
+docker-compose up -d db
+docker-compose ps
+docker-compose exec db psql -U argus_user -d argus -c "SELECT PostGIS_Version();"
+```
+
+Expected result:
+- the `db` container is running and healthy
+- PostgreSQL is reachable on `localhost:5432`
+- `SELECT PostGIS_Version();` returns a PostGIS `3.4.x` version
 
 ### Running Tests
 

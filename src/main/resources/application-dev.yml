@@ -26,6 +26,9 @@ spring:
     locations: classpath:db/migration
 
 argus:
+  cors:
+    allowed-origins:
+      - http://localhost:5173
   polling:
     flights:
       interval: 60s

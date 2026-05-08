@@ -7,7 +7,7 @@ Argus visualizes live air traffic, geopolitical incidents, and world events on a
 <!-- TODO: Replace with hero screenshot or GIF after Sprint 5 -->
 <!-- ![Argus Globe](docs/images/argus-hero.png) -->
 
-> 🚧 **Status: Actively under development** — see the [Changelog](CHANGELOG.md) for progress.
+> **STATUS: Actively under development** — see the [Changelog](CHANGELOG.md) for progress.
 
 ---
 
@@ -64,15 +64,19 @@ cp .env.example .env
 # Edit .env with your OpenSky credentials and database password
 
 # 3. Start the database
-docker-compose up -d db
+docker compose up -d db
 
 # 3a. Verify PostGIS is available
-docker-compose exec db psql -U argus_user -d argus -c "SELECT PostGIS_Version();"
+docker compose exec db psql -U argus_user -d argus -c "SELECT PostGIS_Version();"
 
-# 4. Start the backend
-SPRING_PROFILES_ACTIVE=dev ./mvnw spring-boot:run
+# 4. Configure the backend shell
+source ./scripts/use-java17.sh
+export SPRING_PROFILES_ACTIVE=dev
 
-# 5. Start the frontend (in a new terminal)
+# 5. Start the backend
+./mvnw spring-boot:run
+
+# 6. Start the frontend (in a new terminal)
 cd frontend
 npm install
 npm run dev
@@ -82,14 +86,25 @@ Open [http://localhost:5173](http://localhost:5173) to see the globe.
 
 API documentation is available at [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html) when the backend is running.
 
+If you open a new terminal tab for backend work later, rerun:
+
+```bash
+source ./scripts/use-java17.sh
+export SPRING_PROFILES_ACTIVE=dev
+```
+
+The `dev` profile is the normal local development mode. It enables the local
+PostgreSQL connection, Flyway migrations, debug logging, and the dev-only CORS
+rule that allows the frontend at `http://localhost:5173` to call the backend.
+
 ### Verifying PostgreSQL + PostGIS
 
 Use these commands to validate the local database setup after copying `.env.example` to `.env`:
 
 ```bash
-docker-compose up -d db
-docker-compose ps
-docker-compose exec db psql -U argus_user -d argus -c "SELECT PostGIS_Version();"
+docker compose up -d db
+docker compose ps
+docker compose exec db psql -U argus_user -d argus -c "SELECT PostGIS_Version();"
 ```
 
 Expected result:
@@ -103,7 +118,9 @@ After the database is running, start the backend with the `dev` profile so Flywa
 applies the initial migration:
 
 ```bash
-SPRING_PROFILES_ACTIVE=dev ./mvnw spring-boot:run
+source ./scripts/use-java17.sh
+export SPRING_PROFILES_ACTIVE=dev
+./mvnw spring-boot:run
 ```
 
 Then, in a separate terminal, verify the schema created by `V1__init.sql`:
@@ -117,6 +134,20 @@ Expected result:
 - `flights.location` and `incidents.location` use `geometry(Point,4326)`
 - the required GiST and B-tree indexes are present
 - `news_articles.incident_id` references `incidents.id`
+
+### Verifying Local CORS and Profiles
+
+With the backend running under the `dev` profile:
+
+```bash
+curl -i -H "Origin: http://localhost:5173" http://localhost:8080/api/v1/health
+curl -i -H "Origin: http://localhost:3000" http://localhost:8080/api/v1/health
+```
+
+Expected result:
+- `http://localhost:5173` returns `200` and includes `Access-Control-Allow-Origin: http://localhost:5173`
+- `http://localhost:3000` returns `403 Invalid CORS request`
+- the Spring Boot logs show `The following 1 profile is active: "dev"`
 
 ### Running Tests
 

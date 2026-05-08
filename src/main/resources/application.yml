@@ -1,8 +1,8 @@
 # =============================================================================
-# Argus — Application Configuration
-# Default section keeps DB-dependent autoconfiguration off for non-database tasks.
-# Activate the "dev" profile (SPRING_PROFILES_ACTIVE=dev) to connect to the
-# local PostgreSQL + PostGIS container and apply Flyway migrations on startup.
+# Argus — Shared Application Configuration
+# Profile-specific settings live in application-dev.yml and application-prod.yml.
+# Keep DB-dependent autoconfiguration off by default so docs work, frontend work,
+# and non-DB backend tests can still boot cleanly without a database.
 # =============================================================================
 server:
   port: 8080
@@ -33,86 +33,3 @@ springdoc:
     path: /api-docs
   swagger-ui:
     path: /swagger-ui.html
-
-logging:
-  level:
-    com.argus: DEBUG
-
----
-# =============================================================================
-# dev profile — requires the local PostgreSQL + PostGIS container from ARG-003
-# =============================================================================
-spring:
-  config:
-    activate:
-      on-profile: dev
-
-  # Re-enable the database stack for local development.
-  autoconfigure:
-    exclude: []
-
-  datasource:
-    url: jdbc:postgresql://localhost:5432/${POSTGRES_DB:argus}
-    username: ${POSTGRES_USER:argus_user}
-    password: ${POSTGRES_PASSWORD:changeme}
-    driver-class-name: org.postgresql.Driver
-
-  jpa:
-    hibernate:
-      ddl-auto: validate
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-
-  flyway:
-    enabled: true
-    locations: classpath:db/migration
-
-logging:
-  level:
-    com.argus: DEBUG
-    org.springframework.web: DEBUG
-    org.hibernate.SQL: DEBUG
-
----
-# =============================================================================
-# prod profile — enables the same Flyway-managed schema flow against deployment DBs
-# =============================================================================
-spring:
-  config:
-    activate:
-      on-profile: prod
-
-  # Re-enable the database stack for production.
-  autoconfigure:
-    exclude: []
-
-  datasource:
-    url: ${DATABASE_URL}
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
-    driver-class-name: org.postgresql.Driver
-
-  jpa:
-    hibernate:
-      ddl-auto: validate
-    show-sql: false
-
-  flyway:
-    enabled: true
-    locations: classpath:db/migration
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,metrics
-  endpoint:
-    health:
-      show-details: never
-
-logging:
-  level:
-    com.argus: INFO
-    root: WARN

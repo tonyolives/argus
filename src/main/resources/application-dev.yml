@@ -1,0 +1,42 @@
+# =============================================================================
+# Argus — Development Profile
+# Local development uses the Docker PostgreSQL + PostGIS container and slower
+# polling intervals to keep the app easier to run while building features.
+# =============================================================================
+spring:
+  autoconfigure:
+    exclude: []
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/${POSTGRES_DB:argus}
+    username: ${POSTGRES_USER:argus_user}
+    password: ${POSTGRES_PASSWORD:changeme}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+argus:
+  cors:
+    allowed-origins:
+      - http://localhost:5173
+  polling:
+    flights:
+      interval: 60s
+    incidents:
+      interval: 30m
+
+logging:
+  level:
+    com.argus: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG

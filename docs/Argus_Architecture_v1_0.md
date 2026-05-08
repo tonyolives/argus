@@ -219,6 +219,11 @@ Sensitive values are stored in a `.env` file (gitignored) and referenced in `app
 - `POSTGRES_USER` / `POSTGRES_PASSWORD` — Database credentials.
 - `SPRING_PROFILES_ACTIVE` — `dev` (local) or `prod` (deployed). Controls logging level and polling intervals.
 
+Profile behavior:
+- `application.yml` contains shared defaults and disables DB-dependent autoconfiguration when no profile is set.
+- `application-dev.yml` enables the local PostgreSQL connection, Flyway, debug logging, relaxed poll intervals, and CORS for `http://localhost:5173`.
+- `application-prod.yml` enables env-driven database settings, production poll intervals, and info-level logging.
+
 ## 7. Cross-Cutting Concerns
 
 ### 7.1 Error handling and resilience
@@ -236,7 +241,8 @@ Sensitive values are stored in a `.env` file (gitignored) and referenced in `app
 ### 7.3 Security (MVP scope)
 
 - No authentication for MVP — the application runs locally and is not exposed to the internet.
-- CORS configured to allow localhost origins only.
+- In the `dev` profile, CORS is configured to allow `http://localhost:5173` and reject unconfigured origins.
+- The `prod` profile does not enable the dev-only localhost CORS rule.
 - OpenSky credentials stored in `.env` file, never committed to version control.
 - Post-MVP: Spring Security with JWT authentication will be added when user accounts are implemented.
 

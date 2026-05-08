@@ -15,16 +15,17 @@ Current status:
 
 ### Infrastructure
 ```bash
-docker-compose up -d db
-docker-compose ps
-docker-compose exec db psql -U argus_user -d argus -c "SELECT PostGIS_Version();"
-docker-compose down
+docker compose up -d db
+docker compose ps
+docker compose exec db psql -U argus_user -d argus -c "SELECT PostGIS_Version();"
+docker compose down
 ```
 
 ### Backend
 ```bash
+source ./scripts/use-java17.sh
+export SPRING_PROFILES_ACTIVE=dev
 ./mvnw spring-boot:run
-SPRING_PROFILES_ACTIVE=dev ./mvnw spring-boot:run
 ./mvnw test
 ./mvnw clean package
 ./mvnw spotless:check
@@ -45,25 +46,53 @@ npm run format
 ## Local Development
 
 Run the project in three terminals:
-1. `docker-compose up -d db`
-2. `./mvnw spring-boot:run`
+1. `docker compose up -d db`
+2. `source ./scripts/use-java17.sh && export SPRING_PROFILES_ACTIVE=dev && ./mvnw spring-boot:run`
 3. `cd frontend && npm install && npm run dev`
+
+Backend terminal checklist:
+1. `source ./scripts/use-java17.sh`
+2. `export SPRING_PROFILES_ACTIVE=dev`
+3. `docker compose up -d db`
+4. `./mvnw spring-boot:run`
+
+Why this matters:
+- `use-java17.sh` sets the required local JDK for this repository.
+- The `dev` profile enables the local PostgreSQL connection, Flyway, debug logging, and dev-only CORS for `http://localhost:5173`.
+- If you open a new terminal tab, rerun the `source` and `export` commands in that new shell.
 
 Database verification for ARG-003:
 1. `cp .env.example .env`
-2. `docker-compose up -d db`
-3. `docker-compose ps`
-4. `docker-compose exec db psql -U argus_user -d argus -c "SELECT PostGIS_Version();"`
+2. `docker compose up -d db`
+3. `docker compose ps`
+4. `docker compose exec db psql -U argus_user -d argus -c "SELECT PostGIS_Version();"`
 
 Schema verification for ARG-004:
 1. `cp .env.example .env`
-2. `docker-compose up -d db`
-3. `SPRING_PROFILES_ACTIVE=dev ./mvnw spring-boot:run`
-4. `./scripts/verify_arg004_schema.sh`
+2. `docker compose up -d db`
+3. `source ./scripts/use-java17.sh`
+4. `export SPRING_PROFILES_ACTIVE=dev`
+5. `./mvnw spring-boot:run`
+6. `./scripts/verify_arg004_schema.sh`
+
+Profile and CORS verification for ARG-006:
+1. `source ./scripts/use-java17.sh`
+2. `export SPRING_PROFILES_ACTIVE=dev`
+3. `docker compose up -d db`
+4. `./mvnw test`
+5. `./mvnw spring-boot:run`
+6. `curl -i -H "Origin: http://localhost:5173" http://localhost:8080/api/v1/health`
+7. `curl -i -H "Origin: http://localhost:3000" http://localhost:8080/api/v1/health`
+
+Expected result:
+- allowed origin returns `200` with `Access-Control-Allow-Origin: http://localhost:5173`
+- unconfigured origin returns `403 Invalid CORS request`
 
 Important local URLs:
 - Frontend: `http://localhost:5173`
 - Backend API: `http://localhost:8080`
+- Health endpoint: `http://localhost:8080/api/v1/health`
+- OpenAPI JSON: `http://localhost:8080/api-docs`
 - Swagger UI: `http://localhost:8080/swagger-ui.html`
 
 ## Architecture
@@ -116,6 +145,11 @@ OPENSKY_USERNAME=...
 OPENSKY_PASSWORD=...
 SPRING_PROFILES_ACTIVE=dev
 ```
+
+Profile notes:
+- `default` boots the backend without a database for lightweight tasks.
+- `dev` is the normal local development profile.
+- `prod` is reserved for deployed environments with env-driven DB settings.
 
 ## Development Conventions
 

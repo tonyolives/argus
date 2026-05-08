@@ -17,3 +17,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial Flyway schema migration for flights, incidents, and news_articles with PostGIS-enabled geometry columns and indexes
 - GitHub Actions CI workflow that runs backend and frontend tests and uploads coverage artifacts
 - Shared repository contributor guidance in `AGENTS.md`
+- Dev and prod Spring profile files with environment-specific polling, logging, and database settings
+- Dev-only CORS configuration that allows the Vite frontend origin at `http://localhost:5173`
+- Local Java 17 helper script and documented backend startup flow for profile-aware development

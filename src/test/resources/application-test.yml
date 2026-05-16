@@ -1,0 +1,8 @@
+# Test profile — ensures @SpringBootTest loads without a real database.
+# Mirrors the default section's autoconfigure.exclude list.
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+      - org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration

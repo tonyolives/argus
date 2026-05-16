@@ -1,0 +1,44 @@
+# =============================================================================
+# Argus — Production Profile
+# Production uses environment-driven database settings and standard polling
+# intervals suitable for live deployments.
+# =============================================================================
+spring:
+  autoconfigure:
+    exclude: []
+
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics
+  endpoint:
+    health:
+      show-details: never
+
+argus:
+  polling:
+    flights:
+      interval: 15s
+    incidents:
+      interval: 15m
+
+logging:
+  level:
+    com.argus: INFO
+    root: WARN

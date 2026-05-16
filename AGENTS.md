@@ -1,0 +1,222 @@
+# AGENTS.md
+
+This file provides guidance to coding agents and contributors working in this repository.
+
+## Project Overview
+
+Argus is a real-time global OSINT monitoring platform that visualizes live air traffic,
+geopolitical incidents, and world events on an interactive 3D globe.
+
+Current status:
+- Sprint 0 documentation is complete
+- Sprint 1 establishes the backend, frontend, database, and local dev foundations
+
+## Core Commands
+
+### Infrastructure
+```bash
+docker compose up -d db
+docker compose ps
+docker compose exec db psql -U argus_user -d argus -c "SELECT PostGIS_Version();"
+docker compose down
+```
+
+### Backend
+```bash
+source ./scripts/use-java17.sh
+export SPRING_PROFILES_ACTIVE=dev
+./mvnw spring-boot:run
+./mvnw test
+./mvnw clean package
+./mvnw spotless:check
+./mvnw spotless:apply
+./mvnw clean test jacoco:report
+```
+
+### Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+npm test
+npm run lint
+npm run format
+```
+
+## Local Development
+
+Run the project in three terminals:
+1. `docker compose up -d db`
+2. `source ./scripts/use-java17.sh && export SPRING_PROFILES_ACTIVE=dev && ./mvnw spring-boot:run`
+3. `cd frontend && npm install && npm run dev`
+
+Backend terminal checklist:
+1. `source ./scripts/use-java17.sh`
+2. `export SPRING_PROFILES_ACTIVE=dev`
+3. `docker compose up -d db`
+4. `./mvnw spring-boot:run`
+
+Why this matters:
+- `use-java17.sh` sets the required local JDK for this repository.
+- The `dev` profile enables the local PostgreSQL connection, Flyway, debug logging, and dev-only CORS for `http://localhost:5173`.
+- If you open a new terminal tab, rerun the `source` and `export` commands in that new shell.
+
+Database verification for ARG-003:
+1. `cp .env.example .env`
+2. `docker compose up -d db`
+3. `docker compose ps`
+4. `docker compose exec db psql -U argus_user -d argus -c "SELECT PostGIS_Version();"`
+
+Schema verification for ARG-004:
+1. `cp .env.example .env`
+2. `docker compose up -d db`
+3. `source ./scripts/use-java17.sh`
+4. `export SPRING_PROFILES_ACTIVE=dev`
+5. `./mvnw spring-boot:run`
+6. `./scripts/verify_arg004_schema.sh`
+
+Profile and CORS verification for ARG-006:
+1. `source ./scripts/use-java17.sh`
+2. `export SPRING_PROFILES_ACTIVE=dev`
+3. `docker compose up -d db`
+4. `./mvnw test`
+5. `./mvnw spring-boot:run`
+6. `curl -i -H "Origin: http://localhost:5173" http://localhost:8080/api/v1/health`
+7. `curl -i -H "Origin: http://localhost:3000" http://localhost:8080/api/v1/health`
+
+Expected result:
+- allowed origin returns `200` with `Access-Control-Allow-Origin: http://localhost:5173`
+- unconfigured origin returns `403 Invalid CORS request`
+
+Important local URLs:
+- Frontend: `http://localhost:5173`
+- Backend API: `http://localhost:8080`
+- Health endpoint: `http://localhost:8080/api/v1/health`
+- OpenAPI JSON: `http://localhost:8080/api-docs`
+- Swagger UI: `http://localhost:8080/swagger-ui.html`
+
+## Architecture
+
+Argus uses a three-tier architecture:
+- Frontend: React 18 SPA with `react-globe.gl`
+- Backend: Spring Boot 3 REST API with scheduled polling
+- Database: PostgreSQL 16 + PostGIS 3.4
+
+### Backend package structure
+```text
+src/main/java/com/argus/
+├── controller/
+├── service/
+├── service/poller/
+├── service/filter/
+├── repository/
+├── model/
+├── dto/
+├── client/
+└── config/
+```
+
+### Frontend structure
+```text
+frontend/src/
+├── components/
+├── hooks/
+├── services/
+├── types/
+└── __tests__/
+```
+
+## Data Sources
+
+- OpenSky Network API: live aircraft positions
+- GDELT Event API: incident detection
+- GDELT DOC API: related news article retrieval
+
+## Environment Variables
+
+Copy `.env.example` to `.env` before starting local services.
+
+Expected values include:
+```bash
+POSTGRES_DB=argus
+POSTGRES_USER=argus_user
+POSTGRES_PASSWORD=changeme
+OPENSKY_USERNAME=...
+OPENSKY_PASSWORD=...
+SPRING_PROFILES_ACTIVE=dev
+```
+
+Profile notes:
+- `default` boots the backend without a database for lightweight tasks.
+- `dev` is the normal local development profile.
+- `prod` is reserved for deployed environments with env-driven DB settings.
+
+## Development Conventions
+
+### TDD
+
+TDD is mandatory for:
+- backend service classes
+- filter/pipeline logic
+- REST controllers
+- interactive frontend components
+- custom hooks
+
+TDD is not required for:
+- Spring configuration
+- simple DTOs and entities
+- static or purely presentational components
+- build and deployment scripts
+
+Use Red-Green-Refactor:
+1. Write the failing test first
+2. Implement the minimum code to pass
+3. Refactor with tests still green
+
+### Branching
+
+GitFlow conventions:
+- `main` for production releases
+- `develop` for integration
+- `feature/ARG-XXX-description` for sprint ticket work
+- `hotfix/description` for emergency fixes
+
+### Commit Format
+
+Use Conventional Commits:
+```text
+<type>(scope): <description>
+```
+
+Common types:
+- `feat`
+- `fix`
+- `test`
+- `refactor`
+- `docs`
+- `chore`
+- `style`
+- `perf`
+
+### Code Style
+
+- Java: 4-space indentation
+- TypeScript/React: 2-space indentation
+- SQL: uppercase keywords, `snake_case` identifiers
+
+### Testing Targets
+
+- Backend coverage: `>80%`
+- Frontend coverage: `>70%`
+
+## Ticket Guidance
+
+Before closing a sprint ticket:
+- verify the exact acceptance criteria in `docs/Argus_Sprint_Backlog_v1_0.md`
+- verify related architecture constraints in `docs/Argus_Architecture_v1_0.md`
+- ensure tests and manual verification match the ticket scope
+
+## Notes
+
+- Keep repo guidance here project-specific and shared.
+- Do not store secrets, local-only paths, or personal workflow notes in this file.

@@ -7,7 +7,7 @@ Argus visualizes live air traffic, geopolitical incidents, and world events on a
 <!-- TODO: Replace with hero screenshot or GIF after Sprint 5 -->
 <!-- ![Argus Globe](docs/images/argus-hero.png) -->
 
-> 🚧 **Status: Actively under development** — see the [Changelog](CHANGELOG.md) for progress.
+> **STATUS: Actively under development** — see the [Changelog](CHANGELOG.md) for progress.
 
 ---
 
@@ -26,14 +26,14 @@ There is no free, unified platform that combines real-time flight tracking with 
 
 ## Tech Stack
 
-| Layer | Technology | Version |
-|---|---|---|
-| **Frontend** | React, TypeScript, Globe.gl, Vite | 18.x, 5.x |
-| **Backend** | Spring Boot, Java | 3.2.x, 17 |
-| **Database** | PostgreSQL, PostGIS | 16, 3.4 |
-| **Testing** | JUnit 5, Mockito, Jest, React Testing Library | — |
-| **CI/CD** | GitHub Actions | — |
-| **Infrastructure** | Docker Compose | — |
+| Layer              | Technology                                    | Version   |
+| ------------------ | --------------------------------------------- | --------- |
+| **Frontend**       | React, TypeScript, Globe.gl, Vite             | 18.x, 5.x |
+| **Backend**        | Spring Boot, Java                             | 3.2.x, 17 |
+| **Database**       | PostgreSQL, PostGIS                           | 16, 3.4   |
+| **Testing**        | JUnit 5, Mockito, Jest, React Testing Library | —         |
+| **CI/CD**          | GitHub Actions                                | —         |
+| **Infrastructure** | Docker Compose                                | —         |
 
 ## Architecture
 
@@ -49,14 +49,14 @@ For full details, see the [System Architecture Document](docs/Argus_Architecture
 ### Prerequisites
 
 - **Docker Desktop** (for PostgreSQL + PostGIS)
-- **JDK 17+** ([Eclipse Temurin](https://adoptium.net/) recommended)
+- **JDK 17** ([Eclipse Temurin](https://adoptium.net/) recommended)
 - **Node.js 18+** and npm 9+
 
 ### Setup
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/tony-olivares/argus.git
+git clone https://github.com/tonyolives/argus.git
 cd argus
 
 # 2. Configure environment
@@ -64,12 +64,19 @@ cp .env.example .env
 # Edit .env with your OpenSky credentials and database password
 
 # 3. Start the database
-docker-compose up -d db
+docker compose up -d db
 
-# 4. Start the backend
+# 3a. Verify PostGIS is available
+docker compose exec db psql -U argus_user -d argus -c "SELECT PostGIS_Version();"
+
+# 4. Configure the backend shell
+source ./scripts/use-java17.sh
+export SPRING_PROFILES_ACTIVE=dev
+
+# 5. Start the backend
 ./mvnw spring-boot:run
 
-# 5. Start the frontend (in a new terminal)
+# 6. Start the frontend (in a new terminal)
 cd frontend
 npm install
 npm run dev
@@ -78,6 +85,69 @@ npm run dev
 Open [http://localhost:5173](http://localhost:5173) to see the globe.
 
 API documentation is available at [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html) when the backend is running.
+
+If you open a new terminal tab for backend work later, rerun:
+
+```bash
+source ./scripts/use-java17.sh
+export SPRING_PROFILES_ACTIVE=dev
+```
+
+The `dev` profile is the normal local development mode. It enables the local
+PostgreSQL connection, Flyway migrations, debug logging, and the dev-only CORS
+rule that allows the frontend at `http://localhost:5173` to call the backend.
+
+### Verifying PostgreSQL + PostGIS
+
+Use these commands to validate the local database setup after copying `.env.example` to `.env`:
+
+```bash
+docker compose up -d db
+docker compose ps
+docker compose exec db psql -U argus_user -d argus -c "SELECT PostGIS_Version();"
+```
+
+Expected result:
+- the `db` container is running and healthy
+- PostgreSQL is reachable on `localhost:5432`
+- `SELECT PostGIS_Version();` returns a PostGIS `3.4.x` version
+
+### Verifying Flyway Schema Initialization
+
+After the database is running, start the backend with the `dev` profile so Flyway
+applies the initial migration:
+
+```bash
+source ./scripts/use-java17.sh
+export SPRING_PROFILES_ACTIVE=dev
+./mvnw spring-boot:run
+```
+
+Then, in a separate terminal, verify the schema created by `V1__init.sql`:
+
+```bash
+./scripts/verify_arg004_schema.sh
+```
+
+Expected result:
+- `public.flights`, `public.incidents`, and `public.news_articles` exist
+- `flights.location` and `incidents.location` use `geometry(Point,4326)`
+- the required GiST and B-tree indexes are present
+- `news_articles.incident_id` references `incidents.id`
+
+### Verifying Local CORS and Profiles
+
+With the backend running under the `dev` profile:
+
+```bash
+curl -i -H "Origin: http://localhost:5173" http://localhost:8080/api/v1/health
+curl -i -H "Origin: http://localhost:3000" http://localhost:8080/api/v1/health
+```
+
+Expected result:
+- `http://localhost:5173` returns `200` and includes `Access-Control-Allow-Origin: http://localhost:5173`
+- `http://localhost:3000` returns `403 Invalid CORS request`
+- the Spring Boot logs show `The following 1 profile is active: "dev"`
 
 ### Running Tests
 
@@ -91,6 +161,9 @@ cd frontend && npm test
 # Frontend with coverage
 cd frontend && npm test -- --coverage
 ```
+
+GitHub Actions runs these backend and frontend test commands on every push and
+pull request, and uploads the generated coverage reports as workflow artifacts.
 
 ## Project Structure
 
@@ -128,29 +201,29 @@ argus/
 
 Argus follows strict **Test-Driven Development (TDD)** — tests are written before implementation for all service-layer code and interactive frontend components. See [ADR-005](docs/Argus_ADRs_v1_0.md) for the full rationale and [CONTRIBUTING.md](CONTRIBUTING.md) for the TDD workflow.
 
-| Layer | Tool | Target Coverage |
-|---|---|---|
-| Backend unit tests | JUnit 5 + Mockito | >80% |
+| Layer                     | Tool                              | Target Coverage   |
+| ------------------------- | --------------------------------- | ----------------- |
+| Backend unit tests        | JUnit 5 + Mockito                 | >80%              |
 | Backend integration tests | Spring Boot Test + TestContainers | All API endpoints |
-| Frontend tests | Jest + React Testing Library | >70% |
+| Frontend tests            | Jest + React Testing Library      | >70%              |
 
 ## Documentation
 
-| Document | Description |
-|---|---|
-| [Product Requirements (PRD)](docs/Argus_PRD_v1_0.md) | Scope, user stories, success metrics |
-| [Architecture Decision Records](docs/Argus_ADRs_v1_0.md) | 8 technical decisions with rationale |
-| [System Architecture](docs/Argus_Architecture_v1_0.md) | Component design, data flows, API contracts |
-| [Sprint Backlog](docs/Argus_Sprint_Backlog_v1_0.md) | 36 tickets across 7 sprints |
-| [API Reference](http://localhost:8080/swagger-ui.html) | Auto-generated OpenAPI docs (run backend first) |
+| Document                                                 | Description                                     |
+| -------------------------------------------------------- | ----------------------------------------------- |
+| [Product Requirements (PRD)](docs/Argus_PRD_v1_0.md)     | Scope, user stories, success metrics            |
+| [Architecture Decision Records](docs/Argus_ADRs_v1_0.md) | 8 technical decisions with rationale            |
+| [System Architecture](docs/Argus_Architecture_v1_0.md)   | Component design, data flows, API contracts     |
+| [Sprint Backlog](docs/Argus_Sprint_Backlog_v1_0.md)      | 36 tickets across 7 sprints                     |
+| [API Reference](http://localhost:8080/swagger-ui.html)   | Auto-generated OpenAPI docs (run backend first) |
 
 ## Data Sources
 
-| Source | Purpose | Cost |
-|---|---|---|
-| [OpenSky Network](https://opensky-network.org/) | Live aircraft positions | Free |
-| [GDELT Event API](https://www.gdeltproject.org/) | Auto-detected global events | Free |
-| [GDELT DOC API](https://blog.gdeltproject.org/gdelt-doc-2-0-api-expanded/) | Related news articles | Free |
+| Source                                                                     | Purpose                     | Cost |
+| -------------------------------------------------------------------------- | --------------------------- | ---- |
+| [OpenSky Network](https://opensky-network.org/)                            | Live aircraft positions     | Free |
+| [GDELT Event API](https://www.gdeltproject.org/)                           | Auto-detected global events | Free |
+| [GDELT DOC API](https://blog.gdeltproject.org/gdelt-doc-2-0-api-expanded/) | Related news articles       | Free |
 
 ## License
 
@@ -162,4 +235,4 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 ---
 
-*Named after Argus Panoptes, the hundred-eyed giant of Greek mythology who served as an ever-vigilant watchman.*
+_Named after Argus Panoptes, the hundred-eyed giant of Greek mythology who served as an ever-vigilant watchman._

@@ -14,11 +14,21 @@
 ```
 1. git checkout develop && git pull
 2. git checkout -b feature/ARG-XXX-short-description
-3. Write tests → implement → refactor (TDD)
-4. git commit using conventional commits (see below)
-5. git push -u origin feature/ARG-XXX-short-description
-6. Open PR targeting develop
-7. CI must pass before merge
+3. source ./scripts/use-java17.sh && export SPRING_PROFILES_ACTIVE=dev
+4. Write tests → implement → refactor (TDD)
+5. git commit using conventional commits (see below)
+6. git push -u origin feature/ARG-XXX-short-description
+7. Open PR targeting develop
+8. CI must pass before merge
+```
+
+For local backend work, keep this startup flow handy:
+
+```bash
+source ./scripts/use-java17.sh
+export SPRING_PROFILES_ACTIVE=dev
+docker compose up -d db
+./mvnw spring-boot:run
 ```
 
 ## Commit Messages
